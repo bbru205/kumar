@@ -1,0 +1,361 @@
+gcloud compute firewall-rules create myrule1  --allow tcp:30008
+
+gcloud compute firewall-rules create myrule  --allow tcp:30008
+
+gcloud compute firewall-rules create myrule3  --allow tcp:32767
+
+
+gcloud compute firewall-rules create myrule4  --allow tcp:30008
+
+
+9515581763
+
+
+
+https://github.com/krishnain/kubernetes_730
+
+ 
+deployment-httpd
+=======================
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+	name: httpd-deployment
+	labels:
+		type: ap
+		author: kumar
+spec:
+	replicas: 3
+	selector:
+		matchLabels:
+			type: ap
+	template:
+		metadata:
+			name: httpd-pod
+			labels:
+				type: ap
+		spec:
+			containers:
+				name: myhttpd
+				image: httpd
+				ports:
+					- containerPort: 8080
+					  hostPort: 8080
+...
+
+
+
+secret-postgres
+=======================
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  labels:
+    type: db
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      type: db
+  template:
+    metadata:
+      name: postgres-pod
+      labels:
+        type: db
+    spec:
+      containers:
+        - name: mydb
+          image: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: username
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: dbname
+...
+
+
+===============================================================
+secret postgres
+
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  labels:
+    author: kumar
+
+type: Opaque
+stringData:
+  password: intilliqit
+  username: myuser
+  dbname: mydb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  labels:
+    type: db
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      type: db
+  template:
+    metadata:
+      name: postgres-pod
+      labels:
+        type: db
+    spec:
+      containers:
+        - name: mypostgres
+          image: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgers-secret
+                  key: username
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: mydb
+...
+
+=========================================================
+secret mysql
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+  labels:
+    author: kumar
+
+type: Opaque
+stringData:
+  password: intilliqit
+  username: myuser
+  dbname: mydb
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  labels:
+    type: db
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      type: db
+  template:
+    metadata:
+      name: postgres-pod
+      labels:
+        type: db
+    spec:
+      containers:
+        - name: mypostgres
+          image: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgers-secret
+                  key: username
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: mydb
+...
+
+
+
+
+======================================================
+project in dockers swarm
+
+---
+version: '3'
+services:
+  voting-app:
+    image: dockersamples/examplevotingapp_vote
+    ports:
+      - 5050:80
+    deploy:
+      replicas: 2
+
+  redis-app:
+    image: redis
+    ports:
+      - 6379:6379
+
+  worker-app:
+    image: dockersamples/examplevotingapp_worker
+
+  postgres-app:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: intilliqit
+      POSTGRES_USER: myuser
+      POSTGRES_DB: mydb
+
+  result-app:
+    image: dockersamples/examplevotingapp_result
+    ports:
+      - 6060:80
+...
+ 
+===========================================
+
+namespace:
+=============
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: httpd-pod
+  namespace: test-ns
+  labels:
+    author: intelliqit
+    type: webserver
+spec:
+  containers:
+    - name: myhttpd
+      image: httpd
+      ports:
+        - containerPort: 80
+          hostPort: 8080
+
+
+
+===================================
+
+definition file in requests and limits
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: httpd-pod
+  labels:
+    type: webserver
+spec:
+  containers:
+    - name: myhttpd
+      image: httpd
+      resources:
+        requests:
+          memory: "64Mi"
+          cpu: "250m"
+        limits:
+          memory: "128Mi"
+          cpu: "500m"
+...
+
+
+=================================
+
+deployment file in request and limits
+
+ 
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd-deployment
+  labels:
+    type: kumar
+
+spec:
+  replicas: 2
+  selector:
+    matchlabels:
+      type: kumar
+  template:
+    metadata:
+      name: httpd-pod
+      labels:
+        type: kumar
+    spec:
+      containers:
+        - name: myhttpd
+          image: httpd
+          resourses:
+            request:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128"
+              cpu: "500"
+...
+
+
+
+
+https://github.com/intelliqittrainings/maven.git
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
